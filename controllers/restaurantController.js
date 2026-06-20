@@ -1,42 +1,37 @@
 /**
- * Controllers
+ * Restaurant Controller
  *
- * Controllers handle the logic for each route. They receive the
- * request (req) and response (res) objects from Express and decide
- * what data to send back to the client.
- *
- * Separating controllers from routes keeps our code organized —
- * routes define the URL paths, controllers define the behavior.
+ * Controllers handle the logic for each route. They use async/await
+ * to work with the database (which returns Promises) and try/catch
+ * to handle errors gracefully with proper HTTP status codes.
  */
 
-// Sample restaurant data (will be replaced with a database later)
-const restaurants = [
-  {
-    id: 1,
-    name: 'Green Garden Bistro',
-    cuisine: 'Mediterranean',
-    rating: 4.5,
-    healthyOptions: true
-  },
-  {
-    id: 2,
-    name: 'Fresh Fuel Kitchen',
-    cuisine: 'American',
-    rating: 4.7,
-    healthyOptions: true
-  },
-  {
-    id: 3,
-    name: 'Sakura Bowl',
-    cuisine: 'Japanese',
-    rating: 4.3,
-    healthyOptions: true
-  }
-];
+const Restaurant = require('../models/Restaurant');
 
-// GET /api/restaurants - Return all restaurants
-const getRestaurants = (req, res) => {
-  res.json(restaurants);
+// GET /api/restaurants - Retrieve all restaurants from MongoDB
+const getRestaurants = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find();
+    res.json(restaurants);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 };
 
-module.exports = { getRestaurants };
+// POST /api/restaurants - Create a new restaurant in MongoDB
+const createRestaurant = async (req, res) => {
+  try {
+    const { name, cuisine, rating, healthyOptions } = req.body;
+
+    if (!name || !cuisine || rating === undefined) {
+      return res.status(400).json({ message: 'Name, cuisine, and rating are required' });
+    }
+
+    const restaurant = await Restaurant.create({ name, cuisine, rating, healthyOptions });
+    res.status(201).json(restaurant);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { getRestaurants, createRestaurant };

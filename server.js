@@ -15,7 +15,11 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const corsOptions = require('./config/cors');
+const connectDB = require('./config/database');
 const restaurantRoutes = require('./routes/restaurantRoutes');
+
+// Connect to MongoDB Atlas
+connectDB();
 
 // Create the Express application
 const app = express();
