@@ -17,6 +17,7 @@ const cors = require('cors');
 const corsOptions = require('./config/cors');
 const connectDB = require('./config/database');
 const restaurantRoutes = require('./routes/restaurantRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Connect to MongoDB Atlas
 connectDB();
@@ -48,6 +49,12 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
+
+// Auth routes (register, login, profile)
+app.use('/api/auth', authRoutes);
+
+// Profile route (shortcut — maps to auth controller)
+app.use('/api', authRoutes);
 
 // Restaurant routes
 app.use('/api/restaurants', restaurantRoutes);
