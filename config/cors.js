@@ -18,6 +18,7 @@
 
 // Default allowed origins for local development
 const devOrigins = [
+  'http://localhost:3001', // React web app (better-choices-react)
   'http://localhost:5173', // React web app (Vite default)
   'http://localhost:3000', // Alternative local dev
   'http://localhost:19006' // React Native (Expo web)

@@ -40,6 +40,8 @@ const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const authRoutes = require('./routes/authRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes');
+const diaryRoutes = require('./routes/diaryRoutes');
 
 // Connect to MongoDB Atlas
 connectDB();
@@ -58,7 +60,7 @@ const PORT = process.env.PORT || 5001;
  */
 app.use(logger); // Log all requests
 app.use(cors(corsOptions)); // Enable CORS for frontend apps
-app.use(express.json()); // Parse incoming JSON request bodies
+app.use(express.json({ limit: '5mb' })); // Parse incoming JSON request bodies (increased limit for profile pics)
 
 // --- Routes ---
 
@@ -85,6 +87,12 @@ app.use('/api', authRoutes);
 
 // Restaurant routes
 app.use('/api/restaurants', restaurantRoutes);
+
+// Favorites routes (protected — requires JWT)
+app.use('/api/favorites', favoriteRoutes);
+
+// Diary routes (protected — requires JWT)
+app.use('/api/diary', diaryRoutes);
 
 // 404 handler for undefined routes
 app.use((req, res) => {
